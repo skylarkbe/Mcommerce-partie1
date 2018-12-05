@@ -40,6 +40,18 @@ public class ProductController {
         return produitsFiltres;
     }
 
+    // Afficher les produits par ordre alphabétique
+    @ApiOperation(value = "Cette opération permet d'afficher les produits par ordre alphabétique")
+    @GetMapping(value = "/Produits/sort/name")
+    public MappingJacksonValue trierProduitsParOrdreAlphabetique () {
+        Iterable<Product> produits = productDao.findAllByOrderByNom();
+        SimpleBeanPropertyFilter monFiltre = SimpleBeanPropertyFilter.serializeAllExcept("prixAchat");
+        FilterProvider listDeNosFiltres = new SimpleFilterProvider().addFilter("monFiltreDynamique", monFiltre);
+        MappingJacksonValue produitsFiltres = new MappingJacksonValue(produits);
+        produitsFiltres.setFilters(listDeNosFiltres);
+        return produitsFiltres;
+    }
+
 
     //Récupérer un produit par son Id
     @ApiOperation(value = "Récupère un produit grâce à son ID à condition que celui-ci soit en stock!")
@@ -62,7 +74,6 @@ public class ProductController {
         }
         return ResponseEntity.ok(margeProduits);
     }
-
 
     //ajouter un produit
     @PostMapping(value = "/Produits")
