@@ -2,6 +2,7 @@ package com.ecommerce.microcommerce.web.controller;
 
 import com.ecommerce.microcommerce.dao.ProductDao;
 import com.ecommerce.microcommerce.model.Product;
+import com.ecommerce.microcommerce.web.exceptions.InvalidPriceException;
 import com.ecommerce.microcommerce.web.exceptions.ProduitIntrouvableException;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
@@ -11,6 +12,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -77,7 +80,10 @@ public class ProductController {
 
     //ajouter un produit
     @PostMapping(value = "/Produits")
-    public ResponseEntity<Void> ajouterProduit(@Valid @RequestBody Product product) {
+    public ResponseEntity<Void> ajouterProduit(@Valid @RequestBody Product product, BindingResult bindingResult) {
+        if ( bindingResult.hasFieldErrors("prix") ) {
+            throw new InvalidPriceException("Price must not be 0 or lower");
+        }
         Product productAdded = productDao.save(product);
         if (productAdded == null)
             return ResponseEntity.noContent().build();
@@ -95,7 +101,10 @@ public class ProductController {
     }
 
     @PutMapping(value = "/Produits")
-    public void updateProduit(@RequestBody Product product) {
+    public void updateProduit(@Valid @RequestBody Product product, BindingResult bindingResult) {
+        if ( bindingResult.hasFieldErrors("prix") ) {
+            throw new InvalidPriceException("Price must not be 0 or lower");
+        }
         productDao.save(product);
     }
 
