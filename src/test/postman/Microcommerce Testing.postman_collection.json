@@ -1,0 +1,265 @@
+{
+	"info": {
+		"_postman_id": "0a3292d0-db59-4915-adec-fd595dce3931",
+		"name": "Microcommerce Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Local Product Get All",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1b1a28a5-e78e-4678-8040-b6647c4ccc4f",
+						"exec": [
+							"pm.test(\"Successful GET request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:9090/Produits",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"Produits"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Local Product Get existent product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2377176c-2789-454f-aeae-2d026643a507",
+						"exec": [
+							"pm.test(\"Successful GET request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"});",
+							"pm.test(\"Correct data returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(1);",
+							"    pm.expect(jsonData.nom).to.eql(\"Ordinateur portable\");",
+							"    pm.expect(jsonData.prix).to.eql(350);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:9090/Produits/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"Produits",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Local Product Get inexistent product Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2377176c-2789-454f-aeae-2d026643a507",
+						"exec": [
+							"pm.test(\"Successful GET request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([404]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:9090/Produits/4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"Produits",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Local Product Creation with error in price",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d003549e-a1d2-4310-851e-fa4cc45c318c",
+						"exec": [
+							"pm.test(\"Successful GET request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([400]);",
+							"});",
+							"pm.test(\"Correct information returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.error).to.eql(\"Bad Request\");",
+							"    pm.expect(jsonData.exception).to.eql(\"com.ecommerce.microcommerce.web.exceptions.InvalidPriceException\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": 4,\n    \"nom\": \"Voiture bleue\",\n    \"prix\": 0,\n    \"prixAchat\":10\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/Produits",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"Produits"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Local Product Creation with success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d003549e-a1d2-4310-851e-fa4cc45c318c",
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([201]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\": 4,\n    \"nom\": \"Voiture bleue\",\n    \"prix\": 15,\n    \"prixAchat\":10\n}"
+				},
+				"url": {
+					"raw": "http://localhost:9090/Produits",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"Produits"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Local Product view",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3bffd60a-3d12-48ef-9f1a-70bb89da941b",
+						"exec": [
+							"pm.test(\"Successful GET request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"});",
+							"pm.test(\"Correct data returned\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(4);",
+							"    pm.expect(jsonData.nom).to.eql(\"Voiture bleue\");",
+							"    pm.expect(jsonData.prix).to.eql(15);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:9090/Produits/4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"Produits",
+						"4"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
