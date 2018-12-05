@@ -16,7 +16,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Api(description = "API pour es opérations CRUD sur les produits.")
@@ -41,12 +44,23 @@ public class ProductController {
     //Récupérer un produit par son Id
     @ApiOperation(value = "Récupère un produit grâce à son ID à condition que celui-ci soit en stock!")
     @GetMapping(value = "/Produits/{id}")
-
     public Product afficherUnProduit(@PathVariable int id) {
         Product produit = productDao.findById(id);
         if (produit == null)
             throw new ProduitIntrouvableException("Le produit avec l'id " + id + " est INTROUVABLE. Écran Bleu si je pouvais.");
         return produit;
+    }
+
+    // Afficher la marge des produits
+    @ApiOperation(value = "Cette opération permet de calculer la marge relative aux produits")
+    @GetMapping(value = "/AdminProduits")
+    public ResponseEntity<Map<String,Integer>> calculerMargeProduit() {
+        List<Product> produits = productDao.findAll();
+        Map<String,Integer> margeProduits = new LinkedHashMap<>();
+        if ( produits != null && ! produits.isEmpty() ) {
+            produits.forEach( p -> margeProduits.put(p.toString(), p.getMarge()));
+        }
+        return ResponseEntity.ok(margeProduits);
     }
 
 
